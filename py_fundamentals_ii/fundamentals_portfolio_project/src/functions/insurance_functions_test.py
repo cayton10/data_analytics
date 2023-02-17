@@ -1,26 +1,30 @@
 import unittest
 
-from src.insurance_functions import find_average_age_total
+from .insurance_functions import find_average_age_total
 
 class TestAverage(unittest.TestCase):
     # Success case
     def test_find_average_age_total_success(self):
         # Create mock data for success case
-        success_list = create_mock_list("age")
-        result = find_average_age_total(success_list)
+        key = "age"
+        success_list = create_mock_list(key)
+        result = find_average_age_total(success_list, key)
         self.assertEqual(result, 4.5)
     
     # Failure case
     def test_find_average_age_total_key_error_exception(self):
-        failure_list = create_mock_list("bogus")
-        result = find_average_age_total(failure_list)
-        self.assertRaises(KeyError, result)
+        key = "age"
+        new_key = "bogus"
+        failure_list = create_mock_list(new_key)
+        result = find_average_age_total(failure_list, key)
+        self.assertRaises(KeyError)
 
 if __name__ == '__main__':
     unittest.main()
 
 
 
+# Helper methods
 def create_mock_list(key: str):
     mock_list = []
     for i in range(0, 10):
