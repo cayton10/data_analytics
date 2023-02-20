@@ -75,3 +75,43 @@ def extract_records_by_key(data: list(dict()), key: str, value: Union[str, int, 
         logging.exception(f"An error occurred while calculating the desire average: {Exception}")
 
     return ret_list
+
+
+def get_unique_values(data: list(dict()), key: str) -> list:
+    """
+    Returns a list of unique values listed within a dictionary.
+
+    Parameters
+    ----------
+    data: list
+    List of dictionary objects
+    key: string
+    Key supplied by the user to find the unique values
+
+    Raises
+    ------
+    TypeError
+    If incorrect arg types are passed, throws TypeError
+
+    KeyError
+    If the user provided key does not exist in the dictionary object, throws KeyError
+
+    Exception
+    Generic exception
+    """
+    ret_list = []
+    try:
+        for record in data:
+            if key in record.keys():
+                if record[key] in ret_list:
+                    continue
+                else:
+                    ret_list.append(record[key])
+            else:
+                raise KeyError("Invalid key for this operation. Check dictionary keys.")
+    except KeyError:
+        return KeyError
+    except Exception as e:
+        logging.exception(f"An error occurred while organizing unique {key} values: {e}")
+                          
+    return ret_list

@@ -2,7 +2,7 @@ import unittest
 
 import functions.insurance_functions as test_funcs 
 
-class TestAverage(unittest.TestCase):
+class TestInsuranceFunctions(unittest.TestCase):
     # Success case
     def test_find_average_age_total_success(self):
         # Create mock data for success case
@@ -53,6 +53,14 @@ class TestAverage(unittest.TestCase):
         result = test_funcs.extract_records_by_key(mock_list, "bogus", value)
         self.assertRaises(KeyError)
 
+    # Begin unique region area list constructor
+    def test_get_all_regions(self):
+        key = "smoker"
+        value = "yes"
+        mock_list = create_mock_smoker_region_list(key, value)
+        unique_list = test_funcs.get_unique_values(mock_list, "region")
+        self.assertEqual(len(unique_list), 4)
+
 if __name__ == '__main__':
     unittest.main()
         
@@ -72,6 +80,25 @@ def create_mock_avg_list_float(key: str):
         temp_dict = dict()
         val = round((i / 15) + 1000, 2)
         temp_dict.update({key: str(val)})
+        mock_list.append(temp_dict)
+    return mock_list
+
+def create_mock_smoker_region_list(key: str, value: bool ):
+    mock_list = []
+    for i in range(0, 10):
+        temp_region = ''
+        if i % 2 == 0:
+            temp_region = 'southwest'
+        elif i % 3 == 0:
+            temp_region = 'southeast'
+        elif i % 7 == 0:
+            temp_region = 'northeast'
+        elif i % 5 == 0:
+            temp_region = 'northwest'
+        else:
+            temp_region = 'northeast'
+        temp_dict = create_mock_extract_dict(key, value)
+        temp_dict.update({'region': temp_region})
         mock_list.append(temp_dict)
     return mock_list
 
