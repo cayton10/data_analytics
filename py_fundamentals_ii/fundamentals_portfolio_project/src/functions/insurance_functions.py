@@ -3,6 +3,7 @@ import json
 import math
 import logging
 import numpy as np
+import statistics
 from typing import Union
 
 def find_average(data: list, key: str):
@@ -118,7 +119,7 @@ def get_unique_values(data: list(dict()), key: str) -> list:
     return ret_list
 
 
-def bucket_values_by_key(buckets: list, bucket_key: str, flag_key: str, flag_val: str, data_list = list(dict())) -> list(dict()):
+def bucket_values_by_key(buckets: list, bucket_key: str, data_list: list(dict())):
     """
     Returns values for analysis in buckets.
     Ex: If we want to bucket all smokers by region to find where the majority of them are, etc, etc.
@@ -129,11 +130,7 @@ def bucket_values_by_key(buckets: list, bucket_key: str, flag_key: str, flag_val
     Contains the values (keys) to bucket
     bucket_key: string
     User provided key to target for sorting into respective bucket
-    flag_key: string
-    User provided key to constrain result for bucketing
-    flag_value: string
-    User provided value for flag_key
-    data_list: OPTIONAL list of dictionary objects
+    data_list: list of dictionary objects
 
     Raises
     ------
@@ -147,9 +144,8 @@ def bucket_values_by_key(buckets: list, bucket_key: str, flag_key: str, flag_val
     Generic exception
     """
     for record in data_list:
-        if record[bucket_key] in buckets and record[flag_key] == flag_val:
+        if record[bucket_key] in buckets:
             buckets[record[bucket_key]].append(record)
-    return buckets
 
 
 def check_for_matching_keys(list_1: list, list_2: list) -> bool:
@@ -188,6 +184,30 @@ def create_smoker_data(key: str, smokers: int, non_smokers: int) -> dict:
     }
 
     return record
+
+
+def get_regional_bmi_info(data: list(dict())) -> dict:
+    results = {}
+
+    for region in data:
+
+        regional_total_bmi = 0
+        total_records = len(data[region])
+        bmi_list = []
+        for record in data[region]:
+            regional_total_bmi += float(record['bmi'])
+            bmi_list.append(float(record['bmi']))
+
+        m = round(statistics.mean(bmi_list), 2)
+        std_dev = round(statistics.stdev(bmi_list, xbar = m), 2)
+        results.update({region: {
+            "total_records": total_records,
+            "avg_bmi": m,
+            "std_dev": std_dev
+        }})
+    
+    return results
+
 
 
 
