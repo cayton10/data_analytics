@@ -2,6 +2,7 @@ import csv
 import json
 import math
 import logging
+import numpy as np
 from typing import Union
 
 def find_average(data: list, key: str):
@@ -99,14 +100,14 @@ def get_unique_values(data: list(dict()), key: str) -> list:
     Exception
     Generic exception
     """
-    ret_list = []
+    ret_list = dict(list())
     try:
         for record in data:
             if key in record.keys():
                 if record[key] in ret_list:
                     continue
                 else:
-                    ret_list.append(record[key])
+                    ret_list.update({record[key]: []})
             else:
                 raise KeyError("Invalid key for this operation. Check dictionary keys.")
     except KeyError:
@@ -115,3 +116,81 @@ def get_unique_values(data: list(dict()), key: str) -> list:
         logging.exception(f"An error occurred while organizing unique {key} values: {e}")
                           
     return ret_list
+
+
+def bucket_values_by_key(buckets: list, bucket_key: str, flag_key: str, flag_val: str, data_list = list(dict())) -> list(dict()):
+    """
+    Returns values for analysis in buckets.
+    Ex: If we want to bucket all smokers by region to find where the majority of them are, etc, etc.
+
+    Parameters
+    ----------
+    buckets: list
+    Contains the values (keys) to bucket
+    bucket_key: string
+    User provided key to target for sorting into respective bucket
+    flag_key: string
+    User provided key to constrain result for bucketing
+    flag_value: string
+    User provided value for flag_key
+    data_list: OPTIONAL list of dictionary objects
+
+    Raises
+    ------
+    TypeError
+    If incorrect arg types are passed, throws TypeError
+
+    KeyError
+    If the user provided key does not exist in the options data_list, throws KeyError
+
+    Exception
+    Generic exception
+    """
+    for record in data_list:
+        if record[bucket_key] in buckets and record[flag_key] == flag_val:
+            buckets[record[bucket_key]].append(record)
+    return buckets
+
+
+def check_for_matching_keys(list_1: list, list_2: list) -> bool:
+    """
+    Checks for matching keys between lists
+    Returns boolean
+
+    Parameters
+    ----------
+    list_1: list
+    list_2: list
+
+    Raises
+    ------
+    Exception
+    """
+    try:
+        for key in list_1:
+            if key in list_2:
+                continue
+            else:
+                return False
+        return True
+    except Exception as e:
+        logging.log(0, e)
+
+
+def create_smoker_data(key: str, smokers: int, non_smokers: int) -> dict:
+    record = {
+        key: {
+            "smokers": smokers,
+            "non_smokers": non_smokers,
+            "total": smokers + non_smokers,
+            "percent_smokers": round((smokers / (smokers + non_smokers)) * 100, 2)
+        }
+    }
+
+    return record
+
+
+
+
+
+

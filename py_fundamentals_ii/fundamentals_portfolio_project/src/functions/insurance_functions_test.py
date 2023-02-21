@@ -61,6 +61,19 @@ class TestInsuranceFunctions(unittest.TestCase):
         unique_list = test_funcs.get_unique_values(mock_list, "region")
         self.assertEqual(len(unique_list), 4)
 
+    def test_bucket_values_by_key(self):
+        key = "smoker"
+        mock_list = create_mock_smoker_region_list(key, "yes")
+        bucket_list = test_funcs.get_unique_values(mock_list, "region")
+        lst = test_funcs.bucket_values_by_key(bucket_list, "region", key, "yes", mock_list)
+        # get keys and iterate for values
+        keys = list(lst.keys())
+        print(keys)
+        self.assertEqual(len(bucket_list[keys[0]]), 5)
+        self.assertEqual(len(bucket_list[keys[1]]), 2)
+        self.assertEqual(len(bucket_list[keys[2]]), 2)
+        self.assertEqual(len(bucket_list[keys[3]]), 1)
+
 if __name__ == '__main__':
     unittest.main()
         
