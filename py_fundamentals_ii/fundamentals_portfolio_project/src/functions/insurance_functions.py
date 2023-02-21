@@ -209,6 +209,34 @@ def get_regional_bmi_info(data: list(dict())) -> dict:
     return results
 
 
+def get_smokers_with_kids(data: list(dict()), flag: bool = False) -> list(dict()):
+    result = list(dict())
+    if flag:
+        for record in data:
+            if int(record['children']) > 0:
+                result.append(record)
+    else:
+        for record in data:
+            if int(record['children']) == 0:
+                result.append(record)
+    return result
+
+
+def get_records_by_number_of_kids(data: list(dict()), num_children: int) -> list(dict()):
+    result = list(dict())
+
+    for record in data:
+        if num_children < 4:
+            if int(record['children']) == num_children:
+                result.append(record)
+        elif num_children >= 4:
+            if int(record['children']) >= 4:
+                result.append(record)
+    return result
+
+
+
+
 
 
 
